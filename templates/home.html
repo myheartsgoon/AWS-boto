@@ -20,7 +20,7 @@
                 {% endfor %}
               {% endif %}
 
-              {{ form.key_id(placeholder="Your Key ID") }}
+              {{ form.key_id }}
             </div>
 
             <div class="form-group">
@@ -31,7 +31,7 @@
                 {% endfor %}
               {% endif %}
 
-              {{ form.key_secret(placeholder="Your Key Secret") }}
+              {{ form.key_secret }}
             </div>
 
 
@@ -43,7 +43,7 @@
                 {% endfor %}
               {% endif %}
 
-              {{ form.account(placeholder="Your Key Secret") }}
+              {{ form.account }}
             </div>
 
             {{ form.submit(class="btn-primary") }}
