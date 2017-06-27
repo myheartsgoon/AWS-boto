@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<title >Login</title>
+   <main class="container signup-section">
+    <div class="section-content">
+      <h2>Login</h2>
+
+      <form method="POST" action="/login">
+        {{ form.hidden_tag() }}
+
+        {% for message in get_flashed_messages() %}
+            <p class="error-message">{{ message }}</p>
+        {% endfor %}
+
+        <div class="form-group">
+          {{ form.email.label }}
+          {% if form.email.errors %}
+            {% for error in form.email.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+          {{ form.email }}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label }}
+
+          {% if form.password.errors %}
+            {% for error in form.password.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+          {{ form.password }}
+        </div>
+
+        <div class="remember-me">
+          {{ form.remember_me.label }}
+          {{ form.remember_me }}
+        </div>
+
+        {{ form.submit(class="btn-primary") }}
+      </form>
+    </div>
+  </main>
+{% endblock %}

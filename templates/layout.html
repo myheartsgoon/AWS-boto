@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>
+     <link href="{{ url_for('static', filename='css/main.css') }}?Thursday 24th of April 2008 04:45:21 PM" rel="stylesheet">
+ -   <link rel="icon" href="{{ url_for('static', filename = 'img/favicon.ico') }}" type="image/x-icon">
+  </head>
+  <body>
+    <header>
+      {% block header %}
+      <div class="container">
+        <h1 class="title">Learning Flask</h1>
+      </div>
+
+      <div class="corner">
+        <a href="{{ url_for('home') }}" class="title">Home</a>
+      </div>
+
+      {% endblock %}
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+  </body>
+</html>
