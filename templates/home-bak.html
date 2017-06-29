@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<title >Home</title>
+  <main class="hero-section">
+    <div class="container">
+
+      <div class="section-tabs">
+      </div>
+      <div class="section-map">
+        <div class="nav">
+          <form method="POST" action="/">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+              {{ form.key_id.label }}
+              {% if form.key_id.errors %}
+                {% for error in form.key_id.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {{ form.key_id }}
+            </div>
+
+            <div class="form-group">
+              {{ form.key_secret.label }}
+              {% if form.key_secret.errors %}
+                {% for error in form.key_id.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {{ form.key_secret }}
+            </div>
+
+
+            <div class="form-group">
+              {{ form.account.label }}
+              {% if form.account.errors %}
+                {% for error in form.key_id.errors %}
+                  <p class="error-message">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {{ form.account }}
+            </div>
+
+            {{ form.submit(class="btn-primary") }}
+          </form>
+
+          <div class="container">
+           {% for bucket in bucketlist %}
+           <p class="error-message">{{ bucket }}</p>
+           {% endfor %}
+          </div>
+
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+    </div>
+  </main>
+
+{% endblock %}
