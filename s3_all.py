@@ -27,6 +27,7 @@ class Assume_s3_bucket:
         self.account = str(account).strip()
         self.s3_resource = None
         self.bucketlist = []
+        self.error = None
     #Assume role to another account
     def assumeRole(self):
         # create an STS client object that represents a live connection to the
@@ -39,22 +40,34 @@ class Assume_s3_bucket:
 
         # Call the assume_role method of the STSConnection object and pass the role
         # ARN and a role session name.
-        assumedRoleObject = sts_client.assume_role(
-            RoleArn="arn:aws:iam::" + self.account + ":role/aws-crossaccount-admin",
-            RoleSessionName="AssumeRoleSession1"
-        )
-        # From the response that contains the assumed role, get the temporary
-        # credentials that can be used to make subsequent API calls
-        credentials = assumedRoleObject['Credentials']
+        try:
+            assumedRoleObject = sts_client.assume_role(
+                RoleArn="arn:aws:iam::" + self.account + ":role/aws-crossaccount-admin",
+                RoleSessionName="AssumeRoleSession1"
+            )
 
-        # Use the temporary credentials that AssumeRole returns to make a
-        # connection to Amazon S3
-        self.s3_resource = boto3.resource(
-            's3',
-            aws_access_key_id=credentials['AccessKeyId'],
-            aws_secret_access_key=credentials['SecretAccessKey'],
-            aws_session_token=credentials['SessionToken'],
-        )
+            # From the response that contains the assumed role, get the temporary
+            # credentials that can be used to make subsequent API calls
+            credentials = assumedRoleObject['Credentials']
+
+            # Use the temporary credentials that AssumeRole returns to make a
+            # connection to Amazon S3
+            self.s3_resource = boto3.resource(
+                's3',
+                aws_access_key_id=credentials['AccessKeyId'],
+                aws_secret_access_key=credentials['SecretAccessKey'],
+                aws_session_token=credentials['SessionToken'],
+            )
+
+        #Catch exceptions
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "InvalidClientTokenId":
+                self.error = 'Invalid Key ID or Key Secret!'
+                return self.error
+            else:
+                self.error = 'Error: ' + e.response['Error']['Code']
+
+
 
     #Get all bucket name list
     def getallbucket(self):
@@ -82,7 +95,7 @@ class Assume_s3_bucket:
             if e.response['Error']['Code'] == "404":
                 print("The object does not exist.")
             else:
-                print('Something')
+                print('Error: ' + e.response['Error']['Code'])
 
 
 #-----------------------------Test part----------------------------------------------

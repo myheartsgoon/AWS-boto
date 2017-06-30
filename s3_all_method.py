@@ -24,7 +24,7 @@ class Assume_s3_bucket:
     def __init__(self, key_id, key_secret, account):
         self.KEY_ID = key_id
         self.KEY_SECRET = key_secret
-        self.account = account
+        self.account = str(account).strip()
         self.s3_resource = None
         self.bucketlist = []
     #Assume role to another account
@@ -40,7 +40,7 @@ class Assume_s3_bucket:
         # Call the assume_role method of the STSConnection object and pass the role
         # ARN and a role session name.
         assumedRoleObject = sts_client.assume_role(
-            RoleArn="arn:aws:iam::" + str(self.account) + ":role/aws-crossaccount-admin",
+            RoleArn="arn:aws:iam::" + self.account + ":role/aws-crossaccount-admin",
             RoleSessionName="AssumeRoleSession1"
         )
         # From the response that contains the assumed role, get the temporary
@@ -60,7 +60,6 @@ class Assume_s3_bucket:
     def getallbucket(self):
         for bucket in self.s3_resource.buckets.all():
             self.bucketlist.append(bucket.name)
-            print(bucket.name)
 
     #List all files in a bucket
     def listfiles(self,bucket_name):

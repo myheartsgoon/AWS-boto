@@ -23,9 +23,12 @@ def home():
         else:
             new_s3 = Assume_s3_bucket(form.key_id.data, form.key_secret.data, form.account.data)
             new_s3.assumeRole()
-            new_s3.getallbucket()
-            bucketlist = new_s3.bucketlist
-            return render_template('home.html', form=form, bucketlist=bucketlist)
+            if new_s3.error == None:
+                new_s3.getallbucket()
+                bucketlist = new_s3.bucketlist
+                return render_template('home.html', form=form, bucketlist=bucketlist)
+            else:
+                return render_template('home.html', form=form, return_error=new_s3.error)
 
     elif request.method == 'GET':
         return render_template('home.html', form=form)

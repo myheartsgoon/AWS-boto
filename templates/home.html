@@ -7,44 +7,58 @@
     <form method="POST" action="/">
     {{ form.hidden_tag() }}
 
-    {{ form.key_id.label }}
+    <div class="error-msg">
+    {% if return_error %}
+      {{ return_error }}
+    {% endif %}
+    </div>
 
-    {{ form.key_id }}
+
+    {{ form.key_id.label }}:
+    <div class="error-msg">
     {% if form.key_id.errors %}
      {% for error in form.key_id.errors %}
       {{ error }}
      {% endfor %}
     {% endif %}
+    </div>
+    {{ form.key_id }}
 
-    {{ form.key_secret.label }}
+
+    {{ form.key_secret.label }}:
+    <div class="error-msg">
     {% if form.key_secret.errors %}
-     {% for error in form.key_id.errors %}
+     {% for error in form.key_secret.errors %}
       {{ error }}
      {% endfor %}
     {% endif %}
+    </div>
     {{ form.key_secret }}
 
 
 
-    {{ form.account.label }}
+    {{ form.account.label }}:
+    <div class="error-msg">
     {% if form.account.errors %}
-     {% for error in form.key_id.errors %}
+     {% for error in form.account.errors %}
       {{ error }}
      {% endfor %}
     {% endif %}
+    </div>
     {{ form.account }}
 
-
-     {{ form.submit(class="buttom") }}
+    {{ form.submit(class="buttom") }}
     </form>
 </div>
 
 <div class="div-bucket">
+<ul>
 {% if bucketlist %}
  {% for bucket in bucketlist %}
-    <p class="bucket"> {{ bucket }} </p>
+    <li class="bucket"><a href="#"> {{ bucket }} </a></li>
  {% endfor %}
 {% endif %}
+</ul>
 </div>
 
 {% endblock %}

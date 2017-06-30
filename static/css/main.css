@@ -56,6 +56,10 @@ header {
     clear: both;
 }
 
+.form-div .error-msg {
+    color: #db4437;
+}
+
 .form-div .buttom {
 	width: 100px;
 	margin: 0 auto;
@@ -63,6 +67,8 @@ header {
 }
 
 .div-bucket {
+    width: 20%;
+    margin: auto;
 }
 
 .div-bucket .bucket {
