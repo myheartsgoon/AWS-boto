@@ -15,16 +15,19 @@ class ProgressPercentage(object):
         # to a single filename.
         with self._lock:
             self._seen_so_far += bytes_amount
-            sys.stdout.write(
-                "\r%s --> %s bytes transferred" % (
-                    self._filename, self._seen_so_far))
-            sys.stdout.flush()
+            # sys.stdout.write(
+            #     "\r%s --> %s bytes transferred" % (
+            #         self._filename, self._seen_so_far))
+            # sys.stdout.flush()
+            print(self._seen_so_far)
+            return self._seen_so_far
 
-class Assume_s3_bucket:
+class Assume_s3_bucket(object):
     def __init__(self, key_id, key_secret, account):
         self.KEY_ID = key_id
         self.KEY_SECRET = key_secret
         self.account = str(account).strip()
+        self.credentials = None
         self.s3_resource = None
         self.bucketlist = []
         self.error = None
@@ -48,43 +51,76 @@ class Assume_s3_bucket:
 
             # From the response that contains the assumed role, get the temporary
             # credentials that can be used to make subsequent API calls
-            credentials = assumedRoleObject['Credentials']
+            self.credentials = assumedRoleObject['Credentials']
 
             # Use the temporary credentials that AssumeRole returns to make a
             # connection to Amazon S3
             self.s3_resource = boto3.resource(
                 's3',
-                aws_access_key_id=credentials['AccessKeyId'],
-                aws_secret_access_key=credentials['SecretAccessKey'],
-                aws_session_token=credentials['SessionToken'],
+                aws_access_key_id=self.credentials['AccessKeyId'],
+                aws_secret_access_key=self.credentials['SecretAccessKey'],
+                aws_session_token=self.credentials['SessionToken'],
             )
 
         #Catch exceptions
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "InvalidClientTokenId":
                 self.error = 'Invalid Key ID or Key Secret!'
-                return self.error
             else:
                 self.error = 'Error: ' + e.response['Error']['Code']
 
 
-
     #Get all bucket name list
     def getallbucket(self):
-        for bucket in self.s3_resource.buckets.all():
-            self.bucketlist.append(bucket.name)
+        try:
+            for bucket in self.s3_resource.buckets.all():
+                self.bucketlist.append(bucket.name)
+        except Exception as e:
+            self.error = 'Error: ' + str(e)
 
     #List all files in a bucket
-    def listfiles(self,bucket_name):
-        filecount = 0
-        if bucket_name not in self.bucketlist:
-            print("Bucket doesn't exist")
-        else:
-            bucket = self.s3_resource.Bucket(bucket_name)
-            for file in bucket.objects.all():
-                print(file.key)
-            filecount += 1
-            print('\n Total file number:', filecount)
+    # def listfiles(self,bucket_name):
+    #     filecount = 0
+    #     if bucket_name not in self.bucketlist:
+    #         print("Bucket doesn't exist")
+    #     else:
+    #         bucket = self.s3_resource.Bucket(bucket_name)
+    #         for file in bucket.objects.all():
+    #             print(file.key)
+    #             filecount += 1
+    #         print('\n Total file number:', filecount)
+    def listfiles(self, bucket_name):
+        s3_client = boto3.client('s3', aws_access_key_id=self.credentials['AccessKeyId'],
+                                 aws_secret_access_key=self.credentials['SecretAccessKey'],
+                                 aws_session_token=self.credentials['SessionToken'])
+        paginator = s3_client.get_paginator('list_objects')
+        count = 0
+        # Create a PageIterator from the Paginator
+        try:
+            operation_parameters = {'Bucket': bucket_name,
+                                    'PaginationConfig': {'PageSize': 20, 'MaxItems': 20},
+                                    #                         'StartAfter': 'before-nesting/'
+                                    }
+            page_iterator = paginator.paginate(**operation_parameters)
+
+            for page in page_iterator:
+                marker = page['Marker']
+                # print('Marker is {}:'.format(marker))
+                # print("Next Page : {} {}".format(page['IsTruncated'], type(page['IsTruncated'])))
+                try:
+                    return page['Contents']
+                except:
+                    return None
+                # for each in page['Contents']:
+                #     print(each['Key'])
+                #     count += 1
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "InvalidClientTokenId":
+                self.error = 'Invalid Key ID or Key Secret!'
+            else:
+                self.error = 'Error: ' + e.response['Error']['Code']
+            return None
+        print(count)
 
     #Download a file in bucket
     def download(self, bucketname, filename):
@@ -97,6 +133,34 @@ class Assume_s3_bucket:
             else:
                 print('Error: ' + e.response['Error']['Code'])
 
+    def get_download_url(self, bucketname, filename):
+        try:
+            # Get the service client.
+            s3_client = boto3.client('s3',
+                                     aws_access_key_id=self.credentials['AccessKeyId'],
+                                     aws_secret_access_key=self.credentials['SecretAccessKey'],
+                                     aws_session_token=self.credentials['SessionToken'], )
+
+            # Generate the URL to get 'key-name' from 'bucket-name'
+            url = s3_client.generate_presigned_url(
+                ClientMethod='get_object',
+                Params={
+                    'Bucket': bucketname,
+                    'Key': filename
+                }
+            )
+
+            return url
+
+
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "InvalidClientTokenId":
+                self.error = 'Invalid Key ID or Key Secret!'
+            else:
+                self.error = 'Error: ' + e.response['Error']['Code']
+            return None
 
 #-----------------------------Test part----------------------------------------------
+# new_s3 = Assume_s3_bucket('', '', '')
+# new_s3.assumeRole()
 

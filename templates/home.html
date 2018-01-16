@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<title xmlns="http://www.w3.org/1999/html">Home</title>
+<title>Home</title>
 
 <div class="form-div" >
     <form method="POST" action="/">
@@ -52,13 +52,14 @@
 </div>
 
 <div class="div-bucket">
-<ul>
 {% if bucketlist %}
+<p class="note">Bucket List:</p>
+<ul>
  {% for bucket in bucketlist %}
-    <li class="bucket"><a href="#"> {{ bucket }} </a></li>
+    <li class="bucket"><a href="{{ url_for('listfiles', bucket=bucket)}}"> {{ bucket }} </a></li>
  {% endfor %}
-{% endif %}
 </ul>
+{% endif %}
 </div>
 
 {% endblock %}

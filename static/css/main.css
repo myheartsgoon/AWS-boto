@@ -22,6 +22,15 @@ a {
   display: inline-block;
 }
 
+p{
+   text-align : center;
+}
+
+.note{
+    margin: 10px;
+    text-align: left;
+    font-weight: bold;
+}
 
 /* 
  * Header
@@ -51,7 +60,7 @@ header {
     clear: both;
 }
 .form-div input {
-	width: 100%;
+	width: 130%;
 	margin: 0 auto;
     clear: both;
 }
@@ -64,13 +73,47 @@ header {
 	width: 100px;
 	margin: 0 auto;
     clear: both;
+    margin-bottom: 10px;
+}
+
+.div-default {
+    width: 50%;
+    margin: auto;
+
 }
 
 .div-bucket {
-    width: 20%;
+    width: 40%;
     margin: auto;
+
 }
 
-.div-bucket .bucket {
+.div-files {
+    width: 50%;
+    margin: auto;
 
+}
+
+
+.bucket{
+    border-bottom: 1px solid #ced6e2;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.bucket a{
+    margin-left: 5px;
+    margin-top: 10px;
+}
+
+
+.files{
+    border-bottom: 1px solid #ced6e2;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.files a{
+    margin-left: 5px;
+    margin-top: 10px;
 }

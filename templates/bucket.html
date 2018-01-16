@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<title>Buckets Files</title>
+<div class="div-files">
+
+    <div class="error-msg">
+    {% if return_error %}
+      {{ return_error }}
+    {% endif %}
+    </div>
+
+    {% if get_flashed_messages() %}
+
+    <div class="error-msg">
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}
+                {% endfor %}
+                Click <a href="{{ url_for('home')}}">here</a> to go back to home page
+            </p>
+    </div>
+
+    {% else %}
+    <p class="note">Click link to donwload file:</p>
+        <ul>
+        {% if files %}
+         {% for file in files %}
+            {% if not file['Key'].endswith('/') %}
+                <li class="files"><a href="{{ url_for('download', bucket=bucket, file=file['Key'])}}"> {{ file['Key'] }} </a></li>
+            {% endif %}
+         {% endfor %}
+        {% else %}
+            <p>This bucket is empty.</p>
+        {% endif %}
+        </ul>
+    {% endif %}
+</div>
+
+{% endblock %}
