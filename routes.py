@@ -1,8 +1,9 @@
 # coding=utf-8
 from flask import Flask, render_template, request, redirect, session, url_for, flash
-from forms import SignupForm, LoginForm, Credentials
+from forms import Credentials, Credentials_EC2
 from datetime import timedelta
 from s3_all import Assume_s3_bucket
+from ec2_all import Get_instances_info
 
 
 app = Flask(__name__)
@@ -62,6 +63,32 @@ def download(bucket, file):
             return redirect(url)
         else:
             return render_template('bucket.html', return_error=new_s3.error)
+
+
+@app.route('/ec2', methods=['GET', 'POST'])
+def ec2():
+    form = Credentials_EC2()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('ec2.html', form=form)
+        else:
+            key_id, key_secret, account, region = form.key_id.data, form.key_secret.data, form.account.data, form.region.data
+            session['key_id'], session['key_secret'], session['account'], session['region'] = key_id, key_secret, account, region
+            new_ec2 = Get_instances_info(key_id, key_secret , account, region)
+            reservation = new_ec2.list_instance()
+            print(reservation)
+            if new_ec2.error == None:
+                if len(reservation) > 0:
+                    return render_template('ec2.html', form=form, reservation=reservation)
+                else:
+                    flash("There is no instances in this region.")
+                    return render_template('ec2.html', form=form)
+
+            else:
+                return render_template('ec2.html', form=form, return_error=new_ec2.error)
+    elif request.method == 'GET':
+        return render_template('ec2.html', form=form)
+
 
 @app.errorhandler(404)
 def page_not_found(error):

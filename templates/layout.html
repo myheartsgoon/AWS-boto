@@ -13,7 +13,15 @@
       </div>
 
       <div class="corner">
-        <a href="{{ url_for('home') }}" class="title">Home</a>
+        <a href="{{ url_for('home') }}" title="Home Page" class="title">Home</a>
+      </div>
+
+      <div class="corner">
+        <a href="{{ url_for('home') }}" title="Get S3 Buckets" class="title">S3</a>
+      </div>
+
+      <div class="corner">
+        <a href="{{ url_for('ec2') }}" title="Get EC2 Instances" class="title">EC2</a>
       </div>
 
       {% endblock %}

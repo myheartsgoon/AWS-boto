@@ -20,7 +20,10 @@ h2 {
 a {
   text-decoration: none;
   display: inline-block;
+  #color: #3375e0;
 }
+
+a:hover { text-decoration: underline; }
 
 p{
    text-align : center;
@@ -116,4 +119,19 @@ header {
 .files a{
     margin-left: 5px;
     margin-top: 10px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.stopped_ec2 {
+    color: #db4437;
+    font-weight: bold;
+}
+
+.running_ec2 {
+    color: #4CAF50;
+    font-weight: bold;
 }
