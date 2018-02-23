@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<title>Get EC2 Instances</title>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+        <div class="flash_message">
+        {% if get_flashed_messages() %}
+            {% for message in get_flashed_messages() %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            Click <a href="{{ url_for('ec2')}}">here</a> to authenticate.
+        {% endif %}
+        </div>
+        {% if details %}
+            <div class="page-header">
+              <h1>{{ details[0] }}<small><div class="btn-group ec2_button">
+                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Instance Actions <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    {% if details[4] == "running" %}
+                    <li class="disabled"><a href="#"><i class="fa fa-play fa-lg fa-fw"></i>  Start</a></li>
+                    <li><a href="#" id="stop" data-confirm="Do you really want to stop this instance?"><i class="fa fa-stop fa-lg fa-fw"></i>  Stop</a></li>
+                    <li><a href="#" data-confirm="Do you really want to restart this instance?"><i class="fa fa-refresh fa-lg fa-fw"></i>  Restart</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-confirm="Do you really want to terminate this instance?"><i class="fa fa-trash fa-lg fa-fw"></i>  Terminate</a></li>
+                    {% else %}
+                    <li><a href="#" data-confirm="Do you really want to start this instance?"><i class="fa fa-play fa-lg fa-fw"></i>  Start</a></li>
+                    <li class="disabled"><a href="#"><i class="fa fa-stop fa-lg fa-fw"></i>  Stop</a></li>
+                    <li class="disabled"><a href="#"><i class="fa fa-refresh fa-lg fa-fw"></i>  Restart</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#"><i class="fa fa-trash fa-lg fa-fw"></i>  Terminate</a></li>
+                    {% endif %}
+                  </ul>
+                </div><a class="btn btn-primary ec2_button" id="myModal" href="#" role="button">Create Snapshots</a></small></h1>
+            </div>
+            <div>
+                <div class="detail_label">Instance ID: </div> <div class="detail_content">{{ details[1] }}</div>
+                <div class="detail_label">Instance Type: </div> <div class="detail_content">{{ details[2] }}</div>
+                <div class="detail_label">Private IP: </div> <div class="detail_content">{{ details[3] }}</div>
+                <div class="detail_label">Instance State: </div>
+                {% if details[4] == "running" %}
+                <div class="detail_content running_ec2">
+                    {{ details[4] }}
+                </div>
+                {% else %}
+                <div class="detail_content stopped_ec2">
+                    {{ details[4] }}
+                </div>
+                {% endif %}
+                <div class="detail_label">Status Checks: </div> <div class="detail_content">
+                {% for status in details[-2:] %}
+                    {% if status == 'passed' %}
+                        <i class="fa fa-check-circle icon-passed demo-tooltip-above detail-staus" title="Status Checks Passed" aria-hidden="true"></i>
+                    {% elif status == 'failed' %}
+                        <i class="fa fa-exclamation-triangle icon-failed demo-tooltip-above detail-staus"title="Status Checks Failed" aria-hidden="true"></i>
+                    {% elif status == 'initializing' %}
+                        <i class="fa fa-spinner" aria-hidden="true"></i>
+                    {% else %}
+                        {{ status }}
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <div class="detail_label">Public DNS: </div> <div class="detail_content">{{ details[5] or 'None' }}</div>
+                <div class="detail_label">Security Groups: </div> <div class="detail_content">
+                {% for s in details[6] %}
+                    {{ s.get('GroupName') }}
+                {% endfor %}
+                </div>
+                <div class="detail_label">Block devices: </div> <div class="detail_content">
+                    <div class="block_device">
+                        {% for v in details[7] %}
+                        <a class="block_details" title="{{ v.get('Ebs').get('VolumeId') }}" role="button">{{ v.get('DeviceName') }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        <input type="hidden" id="instance_id" value="{{ details[1] }}">
+        {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

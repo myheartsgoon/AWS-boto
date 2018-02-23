@@ -3,103 +3,117 @@
 {% block content %}
 <title>Get EC2 Instances</title>
 
-<div class="form-div" >
-    <form method="POST" action="/ec2">
-    {{ form.hidden_tag() }}
+<div class="container" >
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <form method="POST" action="/ec2">
+            {{ form.hidden_tag() }}
 
-    <div class="error-msg">
-    {% if return_error %}
-      {{ return_error }}
-    {% endif %}
+            <div class="error-msg">
+            {% if return_error %}
+              {{ return_error }}
+            {% endif %}
+            </div>
+
+            <div class="form-group">
+            {{ form.key_id.label }}:
+            <div class="error-msg">
+            {% if form.key_id.errors %}
+             {% for error in form.key_id.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.key_id(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+            {{ form.key_secret.label }}:
+            <div class="error-msg">
+            {% if form.key_secret.errors %}
+             {% for error in form.key_secret.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.key_secret(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+            {{ form.account.label }}:
+            <div class="error-msg">
+            {% if form.account.errors %}
+             {% for error in form.account.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.account(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-default") }}
+            </form>
+        </div>
     </div>
-
-
-    {{ form.key_id.label }}:
-    <div class="error-msg">
-    {% if form.key_id.errors %}
-     {% for error in form.key_id.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.key_id }}
-
-
-    {{ form.key_secret.label }}:
-    <div class="error-msg">
-    {% if form.key_secret.errors %}
-     {% for error in form.key_secret.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.key_secret }}
-
-
-
-    {{ form.account.label }}:
-    <div class="error-msg">
-    {% if form.account.errors %}
-     {% for error in form.account.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.account }}
-
-
-    {{ form.region.label }}:
-    <div class="error-msg">
-    {% if form.region.errors %}
-     {% for error in form.region.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.region }}
-
-
-    {{ form.submit(class="buttom") }}
-    </form>
 </div>
 
-<div class="div-bucket">
-    {% if get_flashed_messages() %}
-        {% for message in get_flashed_messages() %}
-            <p style="font-weight: bold">{{ message }}</p>
-        {% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+        <div class="flash_message">
+        {% if get_flashed_messages() %}
+            {% for message in get_flashed_messages() %}
+                <p style="font-weight: bold">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        </div>
+
+        {% if instacnes %}
+        <p class="title">EC2 List:</p>
+        <table class="table" style="width:100%">
+          <tr>
+            <th>Instance Name</th>
+            <th>Instance ID</th>
+            <th>Instance type</th>
+            <th>Instance Private IP</th>
+            <th>Instance State</th>
+            <th>Instance Status Check</th>
+            <th>Instance System Check</th>
+            <th></th>
+          </tr>
+          {% for i in instacnes %}
+            <tr>
+                <td>{{ i[0] }}</td>
+                <td>{{ i[1] }}</td>
+                <td>{{ i[2] }}</td>
+                <td>{{ i[3] }}</td>
+                {% if i[4] == 'stopped' %}
+                    <td class="stopped_ec2">
+                    {{ i[4] }}
+                    </td>
+                {% else %}
+                    <td class="running_ec2">
+                    {{ i[4] }}
+                    </td>
+                {% endif %}
+                {% for status in i[-2:] %}
+                    {% if status == 'passed' %}
+                        <td><i class="fa fa-check-circle icon-passed demo-tooltip-above" title="Status Checks Passed" aria-hidden="true"></i></td>
+                    {% elif status == 'failed' %}
+                        <td><i class="fa fa-exclamation-triangle icon-failed demo-tooltip-above" title="Status Checks Failed" aria-hidden="true"></i></td>
+                    {% elif status == 'initializing' %}
+                        <td><i class="fa fa-spinner" aria-hidden="true"></i></td>
+                    {% else %}
+                        <td>{{ status }}</td>
+                    {% endif %}
+                {% endfor %}
+                <td><a class="btn btn-link" href="{{ url_for('details', instance_id=i[1]) }}" role="button">See details</a></td>
+            </tr>
+          {% endfor %}
+        </table>
     {% endif %}
-
-
-    {% if reservation %}
-    <p class="note">EC2 List:</p>
-    <table style="width:100%">
-      <tr>
-        <th>Instance Name</th>
-        <th>Instance ID</th>
-        <th>Instance type</th>
-        <th>Instance Private IP</th>
-        <th>Instance State</th>
-      </tr>
-      {% for i in reservation %}
-        <tr>
-            <td>{{ i.instances[0].tags.get('Name') }}</td>
-            <td>{{ i.instances[0].id }}</td>
-            <td>{{ i.instances[0].instance_type }}</td>
-            <td>{{ i.instances[0].private_ip_address }}</td>
-            {% if i.instances[0].state == 'stopped' %}
-                <td class="stopped_ec2">
-                {{ i.instances[0].state }}
-                </td>
-            {% else %}
-                <td class="running_ec2">
-                {{ i.instances[0].state }}
-                </td>
-            {% endif %}
-        </tr>
-      {% endfor %}
-    </table>
-{% endif %}
+    </div>
+  </div>
 </div>
 
 {% endblock %}

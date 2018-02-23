@@ -25,12 +25,12 @@ a {
 
 a:hover { text-decoration: underline; }
 
-p{
-   text-align : center;
+
+.top-buffer{
+    margin-top:50px;
 }
 
 .note{
-    margin: 10px;
     text-align: left;
     font-weight: bold;
 }
@@ -68,7 +68,7 @@ header {
     clear: both;
 }
 
-.form-div .error-msg {
+form .error-msg {
     color: #db4437;
 }
 
@@ -91,10 +91,23 @@ header {
 
 }
 
+.div-instances{
+    width: 50%;
+    margin: auto;
+}
+
+
 .div-files {
     width: 50%;
     margin: auto;
 
+}
+
+
+.flash_message{
+    margin-top: 30px;
+    font-weight: bold;
+    text-align: center;
 }
 
 
@@ -122,8 +135,9 @@ header {
 }
 
 table, th, td {
-    border: 1px solid black;
+
     border-collapse: collapse;
+    text-align: left;
 }
 
 .stopped_ec2 {
@@ -134,4 +148,42 @@ table, th, td {
 .running_ec2 {
     color: #4CAF50;
     font-weight: bold;
+}
+
+.icon-passed {
+  color: green;
+}
+
+.icon-failed {
+  color: #f4bb41;
+}
+
+.ec2_button{
+    margin-left: 25px;
+}
+
+.detail_label{
+    float: left;
+    width:150px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    text-align: right;
+}
+
+.detail_content{
+    margin-left:150px;
+    margin-bottom: 10px;
+}
+
+.detail-staus{
+    margin-right: 10px;
+}
+
+.block_device{
+    width: 60px;
+    margin-left: 20px
+}
+
+.title{
+    text-align: center;
 }

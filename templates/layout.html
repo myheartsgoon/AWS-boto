@@ -3,32 +3,200 @@
   <head>
      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>
      <link href="{{ url_for('static', filename='css/main.css') }}?Thursday 24th of April 2008 04:45:21 PM" rel="stylesheet">
- -   <link rel="icon" href="{{ url_for('static', filename = 'img/favicon.ico') }}" type="image/x-icon">
+     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+     <script src="https://code.jboxcdn.com/0.4.9/jBox.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <link href="https://code.jboxcdn.com/0.4.9/jBox.css" rel="stylesheet">
+     <link href="https://code.jboxcdn.com/0.4.9/themes/TooltipDark.css" rel="stylesheet">
+     <link href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+     <link rel="icon" href="{{ url_for('static', filename = 'img/favicon.ico') }}" type="image/x-icon">
   </head>
+
+
+  <script>
+    $(document).ready(function() {
+
+
+      // Tooltip above and centered, this is the default setting
+
+      new jBox('Tooltip', {
+        attach: '.demo-tooltip-above',
+        theme: 'TooltipDark'
+      });
+
+      new jBox('Tooltip', {
+        attach: '.block_details',
+        trigger: 'click',
+        theme: 'TooltipDark'
+      });
+
+
+      // Tooltip below to the right
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-below',
+        theme: 'TooltipDark',
+        position: {
+          x: 'right',
+          y: 'bottom'
+        }
+      });
+
+
+      // Tooltip with the pointer moved to the right
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-pointer',
+        theme: 'TooltipDark',
+        pointer: 'right:15' // The pointer is moved to the right with a 15 pixel offset
+      });
+
+
+      // Tooltip at a different target
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-target',
+        theme: 'TooltipDark',
+        target: jQuery('#demo-tooltip-below')
+      });
+
+
+      // Tooltip with an offset
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-offset',
+        theme: 'TooltipDark',
+        offset: {
+          y: -20
+        }
+      });
+
+
+      // Tooltip to the left
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-left',
+        theme: 'TooltipDark',
+        position: {
+          x: 'left',
+          y: 'center'
+        },
+        outside: 'x' // Horizontal Tooltips need to change their outside position
+      });
+
+
+      // Tooltip to the right
+
+      new jBox('Tooltip', {
+        attach: '#demo-tooltip-right',
+        theme: 'TooltipDark',
+        position: {
+          x: 'right',
+          y: 'center'
+        },
+        outside: 'x' // Horizontal Tooltips need to change their outside position
+      });
+
+      new jBox('Confirm', {
+        attach: '#stop',
+        confirmButton: 'Yes',
+        cancelButton: 'No'
+      });
+
+
+      // Mouse following tooltips have the type 'Mouse' instead of 'Tooltip'
+
+      new jBox('Mouse', {
+        attach: '#demo-tooltip-mouse',
+        theme: 'TooltipDark',
+        content: 'I will follow you'
+      });
+
+      var i = $("#instance_id").val()
+      new jBox('Modal', {
+          attach: '#myModal',
+          width: 400,
+          title: 'Create Snpshots',
+          overlay: true,
+          ajax: {
+            url: '/create_snapshots',
+            data: {
+              id: i
+            },
+            reload: 'strict'
+
+    }
+    });
+
+    });
+    </script>
+
   <body>
-    <header>
-      {% block header %}
-      <div class="container">
-        <h1 class="title">AWS Utility</h1>
+      <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+         <a class="navbar-brand" href="{{ url_for('home') }}">AWS Utility</a>
+          <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('home') }}" title="Home Page">Home</a></li>
+            <li><a href="{{ url_for('home') }}" title="Get S3 Buckets">S3</a></li>
+            <li><a href="{{ url_for('ec2') }}" title="Get EC2 Instances" >EC2</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Customers <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ url_for('add_customer') }}">Add Customer</a></li>
+                <li><a href="{{ url_for('show_all_customers') }}">Show All Customers</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+      </nav>
 
-      <div class="corner">
-        <a href="{{ url_for('home') }}" title="Home Page" class="title">Home</a>
-      </div>
 
-      <div class="corner">
-        <a href="{{ url_for('home') }}" title="Get S3 Buckets" class="title">S3</a>
-      </div>
-
-      <div class="corner">
-        <a href="{{ url_for('ec2') }}" title="Get EC2 Instances" class="title">EC2</a>
-      </div>
-
-      {% endblock %}
-    </header>
 
     {% block content %}
     {% endblock %}
 
+      <footer class="footer bg-light top-buffer">
+      <div class="container">
+        <div class="row top-buffer">
+          <div class="col-xs-12 col-md-12 h-100 text-center text-lg-left my-auto">
+            <ul class="list-inline mb-2">
+              <li class="list-inline-item">
+                <a href="#">About</a>
+              </li>
+              <li class="list-inline-item">&sdot;</li>
+              <li class="list-inline-item">
+                <a href="#">Contact</a>
+              </li>
+              <li class="list-inline-item">&sdot;</li>
+              <li class="list-inline-item">
+                <a href="#">Usage</a>
+              </li>
+            </ul>
+
+              <ul class="list-inline mb-0">
+              <li class="list-inline-item mr-3">
+                <a href="https://weibo.com/myheartsgoon">
+                  <i class="fa fa-weibo fa-2x fa-fw"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://github.com/myheartsgoon/AWS-boto">
+                  <i class="fa fa-github fa-2x fa-fw"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="mailto:myheartsgoon@gmail.com">
+                  <i class="fa fa-envelope fa-2x fa-fw"></i>
+                </a>
+              </li>
+            </ul>
+            <p class="text-muted small mb-4 mb-lg-0">&copy; AWS Utility 2018. All Rights Reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

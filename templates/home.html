@@ -3,63 +3,83 @@
 {% block content %}
 <title>Home - Get S3 Buckets</title>
 
-<div class="form-div" >
-    <form method="POST" action="/">
-    {{ form.hidden_tag() }}
+<div class="container" >
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <form method="POST" action="/">
+            {{ form.hidden_tag() }}
 
-    <div class="error-msg">
-    {% if return_error %}
-      {{ return_error }}
-    {% endif %}
+            <div class="error-msg">
+            {% if return_error %}
+              {{ return_error }}
+            {% endif %}
+            </div>
+
+            <div class="form-group">
+            {{ form.key_id.label }}:
+            <div class="error-msg">
+            {% if form.key_id.errors %}
+             {% for error in form.key_id.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.key_id(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+            {{ form.key_secret.label }}:
+            <div class="error-msg">
+            {% if form.key_secret.errors %}
+             {% for error in form.key_secret.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.key_secret(class="form-control") }}
+            </div>
+
+
+            <div class="form-group">
+            {{ form.account.label }}:
+            <div class="error-msg">
+            {% if form.account.errors %}
+             {% for error in form.account.errors %}
+              {{ error }}
+             {% endfor %}
+            {% endif %}
+            </div>
+            {{ form.account(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-default") }}
+            </form>
+        </div>
     </div>
-
-
-    {{ form.key_id.label }}:
-    <div class="error-msg">
-    {% if form.key_id.errors %}
-     {% for error in form.key_id.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.key_id }}
-
-
-    {{ form.key_secret.label }}:
-    <div class="error-msg">
-    {% if form.key_secret.errors %}
-     {% for error in form.key_secret.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.key_secret }}
-
-
-
-    {{ form.account.label }}:
-    <div class="error-msg">
-    {% if form.account.errors %}
-     {% for error in form.account.errors %}
-      {{ error }}
-     {% endfor %}
-    {% endif %}
-    </div>
-    {{ form.account }}
-
-    {{ form.submit(class="buttom") }}
-    </form>
 </div>
 
-<div class="div-bucket">
-{% if bucketlist %}
-<p class="note">Bucket List:</p>
-<ul>
- {% for bucket in bucketlist %}
-    <li class="bucket"><a href="{{ url_for('listfiles', bucket=bucket)}}"> {{ bucket }} </a></li>
- {% endfor %}
-</ul>
-{% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+        <div class="flash_message">
+        {% if get_flashed_messages() %}
+            {% for message in get_flashed_messages() %}
+                <p style="font-weight: bold">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        </div>
+
+        {% if bucketlist %}
+        <p class="title top-buffer">Bucket List:</p>
+        <div class="list-group">
+            {% for bucket in bucketlist %}
+              <a href="{{ url_for('listfiles', bucket=bucket)}}" class="list-group-item">{{ bucket }}</a>
+            {% endfor %}
+        </div>
+
+        {% endif %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

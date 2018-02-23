@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<title>Customers List</title>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+        <div class="flash_message">
+        {% if get_flashed_messages() %}
+            {% for message in get_flashed_messages() %}
+                <p style="font-weight: bold">{{ message }}<a href="{{ url_for('add_customer') }}">Add a new customer?</a></p>
+            {% endfor %}
+        {% endif %}
+        </div>
+
+        {% if account %}
+        <p class="title">Accounts List:</p>
+        <table class="table" style="width:100%">
+          <tr>
+            <th>Customer Name</th>
+            <th>Account ID</th>
+            <th>Customer Region</th>
+            <th></th>
+          </tr>
+          {% for a in account %}
+            <tr>
+                <td>{{ a[0] }}</td>
+                <td>{{ a[1] }}</td>
+                <td>{{ a[2] }}</td>
+                <td><a class="btn btn-danger btn-xs" href="{{ url_for('remove_customer', account_id=a[1]) }}" data-confirm="Are you sure want to remove this customer?" role="button">Remove</a></td>
+            </tr>
+          {% endfor %}
+        </table>
+    {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

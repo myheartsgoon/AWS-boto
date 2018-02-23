@@ -1,7 +1,6 @@
 # coding: utf-8
 import boto3
 import botocore
-import sys
 import threading
 
 
@@ -67,7 +66,7 @@ class Assume_s3_bucket(object):
             if e.response['Error']['Code'] == "InvalidClientTokenId":
                 self.error = 'Invalid Key ID or Key Secret!'
             else:
-                self.error = 'Error: ' + e.response['Error']['Code']
+                self.error = "Failed to list buckets, please check your Key ID and Key Secret."
 
 
     #Get all bucket name list
@@ -76,7 +75,7 @@ class Assume_s3_bucket(object):
             for bucket in self.s3_resource.buckets.all():
                 self.bucketlist.append(bucket.name)
         except Exception as e:
-            self.error = 'Error: ' + str(e)
+            self.error = "Failed to list buckets, please check your Key ID and Key Secret."
 
     #List all files in a bucket
     # def listfiles(self,bucket_name):
@@ -105,20 +104,15 @@ class Assume_s3_bucket(object):
 
             for page in page_iterator:
                 marker = page['Marker']
-                # print('Marker is {}:'.format(marker))
-                # print("Next Page : {} {}".format(page['IsTruncated'], type(page['IsTruncated'])))
                 try:
                     return page['Contents']
                 except:
                     return None
-                # for each in page['Contents']:
-                #     print(each['Key'])
-                #     count += 1
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "InvalidClientTokenId":
                 self.error = 'Invalid Key ID or Key Secret!'
             else:
-                self.error = 'Error: ' + e.response['Error']['Code']
+                self.error = "Failed to list buckets, please check your Key ID and Key Secret."
             return None
         print(count)
 
@@ -157,7 +151,7 @@ class Assume_s3_bucket(object):
             if e.response['Error']['Code'] == "InvalidClientTokenId":
                 self.error = 'Invalid Key ID or Key Secret!'
             else:
-                self.error = 'Error: ' + e.response['Error']['Code']
+                self.error = "Failed to list buckets, please check your Key ID and Key Secret."
             return None
 
 #-----------------------------Test part----------------------------------------------
