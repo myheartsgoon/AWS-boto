@@ -87,12 +87,12 @@
                 <td>{{ i[1] }}</td>
                 <td>{{ i[2] }}</td>
                 <td>{{ i[3] }}</td>
-                {% if i[4] == 'stopped' %}
-                    <td class="stopped_ec2">
+                {% if i[4] == 'running' %}
+                    <td class="running_ec2">
                     {{ i[4] }}
                     </td>
                 {% else %}
-                    <td class="running_ec2">
+                    <td class="stopped_ec2">
                     {{ i[4] }}
                     </td>
                 {% endif %}
